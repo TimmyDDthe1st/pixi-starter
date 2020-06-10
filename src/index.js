@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js';
 import playerImg from './assets/player.png';
 import floorImg from './assets/floor.png';
 
@@ -9,6 +9,10 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 const middleScreenX = app.view.width / 2;
 const middleScreenY = app.view.height / 2;
+
+let mousePosX;
+let mousePosY;
+let movePlayer = false;
 
 //Create floor object
 const floor = new PIXI.Sprite.from(floorImg);
@@ -31,19 +35,39 @@ player.anchor.set(0.5);
 player.x = middleScreenX
 player.y = middleScreenY
 
-player.interactive = true;
-player.buttonMode = true;
-
-player.on('pointerdown', onClick);
-
 app.stage.addChild(player);
 
-function onClick() {
+function onClick(e) {
+    mousePosX = Math.round(e.data.originalEvent.clientX);
+    mousePosY = Math.round(e.data.originalEvent.clientY);
 
-    console.log('click');
-    // let position = e.data.global;
+    movePlayer = true;
 
-    // player.x = position.x;
-    // player.y = position.y;
+    console.log('moving...');
+    console.log(`From ${player.x} ${player.y}`);
+    console.log(`To ${mousePosX} ${mousePosY}`);
 }
 
+app.ticker.add (() => {
+    if(movePlayer) {
+        if(player.x < mousePosX) {
+            player.x ++;
+        }
+
+        if(player.x > mousePosX) {
+            player.x --;
+        }
+
+        if(player.y < mousePosY) {
+            player.y ++;
+        }
+
+        if(player.y > mousePosY) {
+            player.y --;
+        }
+    }
+
+    if(player.x === mousePosX && player.y === mousePosY) {
+        movePlayer = false;
+    }
+});
