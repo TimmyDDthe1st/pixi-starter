@@ -19,6 +19,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "gsap": "^3.3.1",
     "pixi-tween": "^0.2.0",
     "pixi.js": "^5.2.4",
     "tween.js": "^16.6.0"
