@@ -12,6 +12,9 @@ const middleScreenY = app.view.height / 2;
 
 let mousePosX;
 let mousePosY;
+let playerPosX;
+let playerPosY;
+
 let movePlayer = false;
 
 //Create floor object
@@ -38,36 +41,33 @@ player.y = middleScreenY
 app.stage.addChild(player);
 
 function onClick(e) {
-    mousePosX = Math.round(e.data.originalEvent.clientX);
-    mousePosY = Math.round(e.data.originalEvent.clientY);
+    mousePosX = Math.round(e.data.originalEvent.clientX / 10) * 10;
+    mousePosY = Math.round(e.data.originalEvent.clientY / 10) * 10;
+
+    playerPosX = Math.round(player.x);
+    playerPosY = Math.round(player.y);
+
+    const direction = new PIXI.Point();
+    direction.x = mousePosX - playerPosX;
+    direction.y = mousePosY - playerPosY;
+
+    var length = Math.sqrt( direction.x*direction.x + direction.y*direction.y);
+    direction.x/=length;
+    direction.y/=length;
+
+    player.direction = direction;
 
     movePlayer = true;
-
-    console.log('moving...');
-    console.log(`From ${player.x} ${player.y}`);
-    console.log(`To ${mousePosX} ${mousePosY}`);
 }
 
-app.ticker.add (() => {
+app.ticker.add (() => {        
     if(movePlayer) {
-        if(player.x < mousePosX) {
-            player.x ++;
-        }
-
-        if(player.x > mousePosX) {
-            player.x --;
-        }
-
-        if(player.y < mousePosY) {
-            player.y ++;
-        }
-
-        if(player.y > mousePosY) {
-            player.y --;
-        }
+        player.x += player.direction.x * 5;
+        player.y += player.direction.y * 5;
     }
 
-    if(player.x === mousePosX && player.y === mousePosY) {
+    if(Math.round(player.x / 10) * 10 === mousePosX && Math.round(player.y / 10) * 10 === mousePosY) {
+        console.log('I HERE!')
         movePlayer = false;
     }
 });
