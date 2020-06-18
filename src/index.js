@@ -102,7 +102,7 @@ function clickToMove(e) {
 }
 
 function clickEnemy(e) {
-    player.attacking = true;
+    //player.attacking = true;
     clickToMove(e);
 }
 
@@ -115,7 +115,7 @@ function playerMovement() {
     if(isEnemy && movePlayer) {
         if(getDistance(player, targetReticle) < MELEE_RANGE) {
             movePlayer = false;
-            player.attacking = true;
+            //player.attacking = true;
             if(playerHealthBar.alpha < 1) {
                 playerHealthBar.alpha ++;
             }
@@ -124,7 +124,7 @@ function playerMovement() {
     }
 
     if(getDistance(player, targetReticle) > MELEE_RANGE) {
-        player.attacking = false;
+        //player.attacking = false;
     }
 }
 
