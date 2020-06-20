@@ -6,6 +6,7 @@ import MoveSelect from './classes/moveSelect';
 import Floor from './classes/floor';
 import Enemy from './classes/enemy';
 import TargetReticle from './classes/targetReticle';
+import HealthBar from './classes/healthBar';
 
 const app = new PIXI.Application({ width: 800, height: 800, });
 document.body.appendChild(app.view);
@@ -30,32 +31,16 @@ const moveSelect = new MoveSelect(app.stage);
 
 // Create player object
 const player = new Player(app.stage);
+const playerHealthBar = new HealthBar(player);
 
 // Create enemy object
 const enemy = new Enemy(app.stage);
+const enemyHealthBar = new HealthBar(enemy);
+
 
 enemy.on('pointerdown', clickEnemy);
 
-//Create the players health bar
-const playerHealthBar = new PIXI.Container();
-playerHealthBar.pivot.x = 32;
-playerHealthBar.x = player.width / 2;
-playerHealthBar.y = -50;
-playerHealthBar.alpha = 0;
-player.addChild(playerHealthBar);
-//Create the black background rectangle
-let innerBar = new PIXI.Graphics();
-innerBar.beginFill(0x000000);
-innerBar.drawRect(0, 0, 64, 8);
-innerBar.endFill();
-playerHealthBar.addChild(innerBar);
-//Create the front red rectangle
-let outerBar = new PIXI.Graphics();
-outerBar.beginFill(0xFF3300);
-outerBar.drawRect(0, 0, 64, 8);
-outerBar.endFill();
-playerHealthBar.addChild(outerBar);
-playerHealthBar.outer = outerBar;
+
 
 // Create target reticule
 const targetReticle = new TargetReticle(app.stage);
@@ -119,6 +104,9 @@ function playerMovement() {
             if(playerHealthBar.alpha < 1) {
                 playerHealthBar.alpha ++;
             }
+            if(enemyHealthBar.alpha < 1) {
+                enemyHealthBar.alpha ++;
+            }
         }        
         player.move();
     }
@@ -142,6 +130,9 @@ function enemyTargetReticule() {
         if(playerHealthBar.alpha > 0) {
             playerHealthBar.alpha --;
         }
+        if(enemyHealthBar.alpha > 0) {
+            enemyHealthBar.alpha --;
+        }
     }
 }
 
@@ -149,6 +140,9 @@ function stopMovement() {
     if(Math.round(player.x / 10) * 10 === mousePosX && Math.round(player.y / 10) * 10 === mousePosY) {
         movePlayer = false;
         moveSelect.alpha = 0;
+        if(isEnemy) {
+           // player.attacking = true;
+        }
     }
 }
 
@@ -162,6 +156,5 @@ function getDistance(object1, object2) {
 app.ticker.add (() => {    
     playerMovement();
     enemyTargetReticule();
-    //playerTakeDamage();
     stopMovement();
 });

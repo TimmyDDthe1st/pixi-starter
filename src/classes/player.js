@@ -9,18 +9,9 @@ class Player extends PIXI.Sprite{
         this.position.x = 400;
         this.position.y = 400;
         this.health = 100;
-        // this.attacking = false;
         this.tag = 'player';
 
         stage.addChild(this);
-    }
-
-    get attacking() {
-        return this.attacking;
-    }
-
-    set attacking(state) {
-        this.attacking = state;
     }
 
     move() {
