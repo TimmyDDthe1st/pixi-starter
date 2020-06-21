@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import gsap from 'gsap'
 
+
 import Player from './classes/player';
 import MoveSelect from './classes/moveSelect';
 import Floor from './classes/floor';
@@ -21,6 +22,9 @@ let playerPosX;
 let playerPosY;
 let isEnemy;
 let movePlayer = false;
+let enemyAttackInterval
+let playerAttackInterval
+
 
 //Create floor object
 const floor = new Floor(app.stage);
@@ -37,17 +41,22 @@ const playerHealthBar = new HealthBar(player);
 const enemy = new Enemy(app.stage);
 const enemyHealthBar = new HealthBar(enemy);
 
-
 enemy.on('pointerdown', clickEnemy);
-
-
 
 // Create target reticule
 const targetReticle = new TargetReticle(app.stage);
 
+function enemyAttack() {
+    playerHealthBar.damage(player, player.getHealth(), enemy.getAttackPower())
+}
+
+function playerAttack() {
+    enemyHealthBar.damage(enemy, enemy.getHealth(), player.getAttackPower())
+}
 
 function clickToMove(e) {
     moveSelect.alpha = 0;
+    
     if(e.target.tag === 'floor'){
         mousePosX = Math.round(e.data.originalEvent.clientX / 10) * 10;
         mousePosY = Math.round(e.data.originalEvent.clientY / 10) * 10;
@@ -87,7 +96,6 @@ function clickToMove(e) {
 }
 
 function clickEnemy(e) {
-    //player.attacking = true;
     clickToMove(e);
 }
 
@@ -100,7 +108,10 @@ function playerMovement() {
     if(isEnemy && movePlayer) {
         if(getDistance(player, targetReticle) < MELEE_RANGE) {
             movePlayer = false;
-            //player.attacking = true;
+
+            enemyAttackInterval = setInterval(enemyAttack, 1000);
+            playerAttackInterval = setInterval(playerAttack, 1000);
+
             if(playerHealthBar.alpha < 1) {
                 playerHealthBar.alpha ++;
             }
@@ -109,10 +120,6 @@ function playerMovement() {
             }
         }        
         player.move();
-    }
-
-    if(getDistance(player, targetReticle) > MELEE_RANGE) {
-        //player.attacking = false;
     }
 }
 
@@ -133,6 +140,10 @@ function enemyTargetReticule() {
         if(enemyHealthBar.alpha > 0) {
             enemyHealthBar.alpha --;
         }
+
+        console.log('out of range')
+        clearInterval(enemyAttackInterval);
+        clearInterval(playerAttackInterval);
     }
 }
 
@@ -140,9 +151,6 @@ function stopMovement() {
     if(Math.round(player.x / 10) * 10 === mousePosX && Math.round(player.y / 10) * 10 === mousePosY) {
         movePlayer = false;
         moveSelect.alpha = 0;
-        if(isEnemy) {
-           // player.attacking = true;
-        }
     }
 }
 

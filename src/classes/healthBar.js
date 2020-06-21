@@ -18,12 +18,23 @@ class HealthBar extends PIXI.Container{
         this.addChild(innerBar);
         
         //Create the front red rectangle
-        let outerBar = new PIXI.Graphics();
-        outerBar.beginFill(0xFF3300);
-        outerBar.drawRect(0, 0, 64, 8);
-        outerBar.endFill();
-        this.addChild(outerBar);
-        instance.outer = outerBar;
+        this.outerBar = new PIXI.Graphics();
+        this.outerBar.beginFill(0xFF3300);
+        this.outerBar.drawRect(0, 0, 64, 8);
+        this.outerBar.endFill();
+        this.addChild(this.outerBar);
+    }
+
+    damage(entity, health, attackPower) {
+        entity.takeDamage(attackPower)
+        let length = health - attackPower;
+
+        if(this.outerBar.width > 0) {
+            this.outerBar.width = length;
+        } else {
+            this.outerBar.width = 0;
+        }
+
     }
 }
 

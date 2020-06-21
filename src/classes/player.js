@@ -8,7 +8,8 @@ class Player extends PIXI.Sprite{
         this.anchor.set(0.5);
         this.position.x = 400;
         this.position.y = 400;
-        this.health = 100;
+        this.attackPower = 10;
+        this.health = 64; // 64 = draw a full healthbar, relates to pixel width
         this.tag = 'player';
 
         stage.addChild(this);
@@ -17,6 +18,22 @@ class Player extends PIXI.Sprite{
     move() {
         this.position.x += this.direction.x * 5;
         this.position.y += this.direction.y * 5;
+    }
+
+    getAttackPower() {
+        return this.attackPower;
+    }
+
+    getHealth() {
+        return this.health;
+    }
+
+    takeDamage(attackPower) {
+        if(this.health > 0) {
+            this.health -= attackPower;
+        } else {
+            this.health = 0;
+        }
     }
 }
 
